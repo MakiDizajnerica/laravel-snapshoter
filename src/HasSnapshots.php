@@ -8,49 +8,83 @@ use MakiDizajnerica\Snapshoter\Contracts\Snapshotable;
 
 trait HasSnapshots
 {
+    /**
+     * Get all snapshots for the model.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
     public function snapshots()
     {
         return $this->morphMany(Snapshot::class, 'snapshotable');
     }
 
+    /**
+     * The "boot" method of the trait.
+     *
+     * @return void
+     */
     public static function bootHasSnapshots()
     {
         static::deleted(fn ($model) => $model->snapshots()->delete());
     }
 
+    /**
+     * Make snapshot for the model.
+     * 
+     * @return \MakiDizajnerica\Snapshoter\Models\Snapshot
+     */
     public function makeSnapshot(): Snapshot
     {
         return Snapshoter::makeSnapshot($this);
     }
 
+    /**
+     * Revert model's state to the previous snapshot.
+     * 
+     * @return \MakiDizajnerica\Snapshoter\Contracts\Snapshotable
+     */
     public function revertToPreviousSnapshot(): Snapshotable
     {
-        $snapshot = $this->snapshots()
-            ->latest()
-            ->skip(1)
-            ->first();
-
-        return $this->revertToSnapshot($snapshot);
+        return $this->revertToSnapshot(
+            $this->snapshots()
+                ->latest()
+                ->skip(1)
+                ->first()
+        );
     }
 
-    public function revertBackSnapshots(int $skip = 1): Snapshotable
+    /**
+     * Revert model's state to the snapshot from a few steps back.
+     * 
+     * @param  int $step
+     * @return \MakiDizajnerica\Snapshoter\Contracts\Snapshotable
+     */
+    public function revertBackSnapshots(int $step = 1): Snapshotable
     {
-        if ($skip <= 1) {
+        if ($step <= 1) {
             return $this->revertToPreviousSnapshot();
         }
 
-        $snapshot = $this->snapshots()
-            ->latest()
-            ->skip($skip)
-            ->first();
-
-        return $this->revertToSnapshot($snapshot);
+        return $this->revertToSnapshot(
+            $this->snapshots()
+                ->latest()
+                ->skip($step)
+                ->first()
+        );
     }
 
+    /**
+     * Revert model's state to the snapshot.
+     * 
+     * @param  \MakiDizajnerica\Snapshoter\Models\Snapshot|int|string $snapshot
+     * @return \MakiDizajnerica\Snapshoter\Contracts\Snapshotable
+     */
     public function revertToSnapshot($snapshot): Snapshotable
     {
         return Snapshoter::revertToSnapshot($this, $snapshot);
     }
+
+
 
     public static function createWithSnapshot(array $attributes = []): static
     {

@@ -18,7 +18,7 @@ class Snapshot extends Model
     ];
 
     protected $hidden = [
-        //
+        'id',
     ];
 
     protected $appends = [
@@ -31,7 +31,7 @@ class Snapshot extends Model
     ];
 
     /**
-     * The "booted" method of the model.
+     * The "booted" method of the Snapshot.
      *
      * @return void
      */
@@ -44,12 +44,14 @@ class Snapshot extends Model
     }
 
     /**
-     * Get the route key for the model.
+     * Get the route key for the Snapshot.
      *
      * @return string
      */
     public function getRouteKeyName()
     {
+        // We don't want to expose the "id",
+        // so we are using other field for route binding.
         return 'uuid';
     }
 
@@ -65,7 +67,7 @@ class Snapshot extends Model
     }
 
     /**
-     * Get snapshotable model instance.
+     * Get snapshotable model for the Snapshot.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
