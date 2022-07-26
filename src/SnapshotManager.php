@@ -11,7 +11,7 @@ class SnapshotManager
     public function makeSnapshot(Snapshotable $model): Snapshot
     {
         $fields = $model->snapshotFields();
-        $fields = $model->only($fields);
+        // $fields = $model->only($fields);
 
         foreach ($fields as $key => $value) {
             if ($value instanceof Collection) {
