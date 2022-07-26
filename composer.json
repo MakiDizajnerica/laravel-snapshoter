@@ -1,0 +1,45 @@
+{
+    "name": "makidizajnerica/laravel-snapshoter",
+    "description": "Laravel model snapshoter.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["php", "laravel", "framework", "model", "models", "eloquent", "snapshot"],
+    "homepage": "https://github.com/MakiDizajnerica/laravel-snapshoter",
+    "authors": [
+        {
+            "name": "Nemanja Marijanovic",
+            "email": "n.marijanovic@hotmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.0",
+        "laravel/framework": ">=9.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^6.9",
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "MakiDizajnerica\\Snapshoter\\": "src"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "MakiDizajnerica\\Snapshoter\\Tests": "tests"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "MakiDizajnerica\\Snapshoter\\SnapshoterServiceProvider"
+            ],
+            "aliases": {
+                "Snapshoter": "MakiDizajnerica\\Snapshoter\\Facades\\Snapshoter"
+            }
+        }
+    }
+}
