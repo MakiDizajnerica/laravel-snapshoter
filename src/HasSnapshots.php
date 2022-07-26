@@ -15,7 +15,7 @@ trait HasSnapshots
 
     public static function bootHasSnapshots()
     {
-        static::deleting(fn ($model) => $model->snapshots()->delete());
+        static::deleted(fn ($model) => $model->snapshots()->delete());
     }
 
     public function makeSnapshot(): Snapshot
