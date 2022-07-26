@@ -3,8 +3,8 @@
 namespace MakiDizajnerica\Snapshoter;
 
 use MakiDizajnerica\Snapshoter\Models\Snapshot;
+use MakiDizajnerica\Snapshoter\Facades\Snapshoter;
 use MakiDizajnerica\Snapshoter\Contracts\Snapshotable;
-use MakiDizajnerica\Snapshoter\Facades\Snapshoter as SnapshoterFacade;
 
 trait HasSnapshots
 {
@@ -20,7 +20,7 @@ trait HasSnapshots
 
     public function makeSnapshot(): Snapshot
     {
-        return SnapshoterFacade::makeSnapshot($this);
+        return Snapshoter::makeSnapshot($this);
     }
 
     public function revertToPreviousSnapshot(): Snapshotable
@@ -49,7 +49,7 @@ trait HasSnapshots
 
     public function revertToSnapshot($snapshot): Snapshotable
     {
-        return SnapshoterFacade::revertToSnapshot($this, $snapshot);
+        return Snapshoter::revertToSnapshot($this, $snapshot);
     }
 
     public static function createWithSnapshot(array $attributes = []): static
