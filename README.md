@@ -16,7 +16,7 @@ php artisan migrate
 
 ## Usage
 
-Your model needs to implement `MakiDizajnerica\Snapshoter\Contracts\Snapshotable` and also to use `MakiDizajnerica\Snapshoter\HasSnapshots` trait.
+Your model needs to implement `MakiDizajnerica\Snapshoter\Contracts\Snapshotable` and also to use `MakiDizajnerica\Snapshoter\HasSnapshots` trait. Next define `snapshotFields` method that will return model attributes you want to save to the snapshots:
 
 ```php
 <?php
@@ -30,6 +30,21 @@ use MakiDizajnerica\Snapshoter\Contracts\Snapshotable as SnapshotableContract;
 class Project extends Model implements SnapshotableContract
 {
     use HasSnapshots;
+
+    /**
+     * Get fields for the snapshot.
+     *
+     * @return array<string, mixed>
+     */
+    public function snapshotFields(): array
+    {
+        return $this->only([
+            'name',
+            'description',
+            'start_at',
+            'end_at',
+        ]);
+    }
 
     // ...
 }

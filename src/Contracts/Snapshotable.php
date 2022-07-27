@@ -7,7 +7,7 @@ interface Snapshotable
     /**
      * Get fields for the snapshot.
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function snapshotFields(): array;
 }
