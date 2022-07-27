@@ -57,24 +57,11 @@ trait HasSnapshots
      */
     public function revertToPreviousSnapshot(int $step = 1): Snapshotable
     {
-        $snapshot = $step <= 1
-            ? $this->retrieveSnapshotBySteps(1)
-            : $this->retrieveSnapshotBySteps($step);
+        $snapshot = $this->relationLoaded('snapshots')
+            ? $this->snapshots->sortByDesc('id')->skip(abs($step))->first()
+            : $this->snapshots()->latest()->skip(abs($step))->first();
 
         return $this->revertToSnapshot($snapshot);
-    }
-
-    /**
-     * Retrieve snapshot for the model by steps.
-     * 
-     * @param  int $step
-     * @return \MakiDizajnerica\Snapshoter\Models\Snapshot|null
-     */
-    private function retrieveSnapshotBySteps(int $step = 1): ?Snapshot
-    {
-        return $this->relationLoaded('snapshots')
-            ? $this->snapshots->sortByDesc('id')->skip($step)->first()
-            : $this->snapshots()->latest()->skip($step)->first();
     }
 
 
