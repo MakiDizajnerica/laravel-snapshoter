@@ -39,41 +39,6 @@ trait HasSnapshots
     }
 
     /**
-     * Revert model's state to the previous snapshot.
-     * 
-     * @return \MakiDizajnerica\Snapshoter\Contracts\Snapshotable
-     */
-    public function revertToPreviousSnapshot(): Snapshotable
-    {
-        return $this->revertToSnapshot(
-            $this->snapshots()
-                ->latest()
-                ->skip(1)
-                ->first()
-        );
-    }
-
-    /**
-     * Revert model's state to the snapshot from a few steps back.
-     * 
-     * @param  int $step
-     * @return \MakiDizajnerica\Snapshoter\Contracts\Snapshotable
-     */
-    public function revertBackSnapshots(int $step = 1): Snapshotable
-    {
-        if ($step <= 1) {
-            return $this->revertToPreviousSnapshot();
-        }
-
-        return $this->revertToSnapshot(
-            $this->snapshots()
-                ->latest()
-                ->skip($step)
-                ->first()
-        );
-    }
-
-    /**
      * Revert model's state to the snapshot.
      * 
      * @param  \MakiDizajnerica\Snapshoter\Models\Snapshot|string|int $snapshot
@@ -82,6 +47,34 @@ trait HasSnapshots
     public function revertToSnapshot($snapshot): Snapshotable
     {
         return Snapshoter::revertToSnapshot($this, $snapshot);
+    }
+
+    /**
+     * Revert model's state to the previous snapshot.
+     * 
+     * @param  int $step
+     * @return \MakiDizajnerica\Snapshoter\Contracts\Snapshotable
+     */
+    public function revertToPreviousSnapshot(int $step = 1): Snapshotable
+    {
+        $snapshot = $step <= 1
+            ? $this->retrieveSnapshotBySteps(1)
+            : $this->retrieveSnapshotBySteps($step);
+
+        return $this->revertToSnapshot($snapshot);
+    }
+
+    /**
+     * Retrieve snapshot for the model by steps.
+     * 
+     * @param  int $step
+     * @return \MakiDizajnerica\Snapshoter\Models\Snapshot|null
+     */
+    private function retrieveSnapshotBySteps(int $step = 1): ?Snapshot
+    {
+        return $this->relationLoaded('snapshots')
+            ? $this->snapshots->sortByDesc('id')->skip($step)->first()
+            : $this->snapshots()->latest()->skip($step)->first();
     }
 
 

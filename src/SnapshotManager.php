@@ -17,14 +17,14 @@ class SnapshotManager
      */
     public function makeSnapshot(Snapshotable $model): Snapshot
     {
-        $fields = Arr::map(
+        $state = Arr::map(
             $model->snapshotFields(),
             fn ($value) => $value instanceof Collection
                 ? $value->modelKeys()
                 : $value
         );
 
-        return $model->snapshots()->create(['data' => $fields]);
+        return $model->snapshots()->create(['state' => $state]);
     }
 
     /**
@@ -61,11 +61,9 @@ class SnapshotManager
     {
         // We are first going to check if model relation "snapshots" is loaded
         // and we are going to take the snapshot from there. *optimisation*
-        if ($model->relationLoaded('snapshots')) {
-            return $model->snapshots->firstWhere($field, $value);
-        }
-
-        return $model->snapshots()->firstWhere($field, $value);
+        return $model->relationLoaded('snapshots')
+            ? $model->snapshots->firstWhere($field, $value)
+            : $model->snapshots()->firstWhere($field, $value);
     }
 
     /**
@@ -91,21 +89,23 @@ class SnapshotManager
             ->where('id', '>', $snapshot->getKey())
             ->delete();
 
-        return $this->revert($model, $snapshot->data);
+        return $this->revert($model, $snapshot);
     }
 
     /**
      * @param  \MakiDizajnerica\Snapshoter\Contracts\Snapshotable $model
-     * @param  array $fields
+     * @param  \MakiDizajnerica\Snapshoter\Models\Snapshot $snapshot
      * @return \MakiDizajnerica\Snapshoter\Contracts\Snapshotable
      * 
      * @todo Handle model relations.
      */
-    protected function revert(Snapshotable $model, array $fields): Snapshotable
+    protected function revert(Snapshotable $model, Snapshot $snapshot): Snapshotable
     {
+        $state = $snapshot->state;
+
         // Here we use "saveQuietly" because technically we are not updating the model,
         // we are just returning it to the previous state and we don't want any events to fire.
-        $model->forceFill($fields)->saveQuietly();
+        $model->forceFill($state)->saveQuietly();
 
         return $model;
     }

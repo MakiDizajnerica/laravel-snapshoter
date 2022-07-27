@@ -17,7 +17,7 @@ return new class extends Migration
             $table->increments('id');
             $table->uuid('uuid')->unique();
             $table->morphs('snapshotable');
-            $table->json('data');
+            $table->json('state');
             $table->timestamp('created_at');
         });
     }

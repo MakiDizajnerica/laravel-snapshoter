@@ -14,7 +14,7 @@ class Snapshot extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'data',
+        'state',
     ];
 
     protected $hidden = [
@@ -26,7 +26,7 @@ class Snapshot extends Model
     ];
 
     protected $casts = [
-        'data' => 'array',
+        'state' => 'array',
         'created_at' => 'datetime',
     ];
 

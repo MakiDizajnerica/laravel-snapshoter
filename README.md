@@ -51,7 +51,7 @@ $project->makeSnapshot();
 $project->revertToPreviousSnapshot();
 
 // Revert model's state to the snapshot from a few steps back
-$project->revertBackSnapshots(3);
+$project->revertToPreviousSnapshot(3);
 
 // You can also pass Snapshot instance
 $snapshot = Snapshot::first();
