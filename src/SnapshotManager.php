@@ -31,7 +31,7 @@ class SnapshotManager
      * Retrieve snapshot for the model.
      * 
      * @param  \MakiDizajnerica\Snapshoter\Contracts\Snapshotable $model
-     * @param  \MakiDizajnerica\Snapshoter\Models\Snapshot|int|string $snapshot
+     * @param  \MakiDizajnerica\Snapshoter\Models\Snapshot|string|int $snapshot
      * @return \MakiDizajnerica\Snapshoter\Models\Snapshot|null
      */
     public function retrieveSnapshot(Snapshotable $model, $snapshot): ?Snapshot
@@ -40,14 +40,15 @@ class SnapshotManager
             return null;
         }
 
-        switch (true) {
-            case ($snapshot instanceof Snapshot):
-                return $snapshot;
-            case is_string($snapshot):
-                return $this->retrieve($model, $snapshot, 'uuid');
-            default:
-                return $this->retrieve($model, $snapshot);
+        if ($snapshot instanceof Snapshot) {
+            return $snapshot;
         }
+
+        if (is_string($snapshot)) {
+            return $this->retrieve($model, $snapshot, 'uuid');
+        }
+
+        return $this->retrieve($model, $snapshot, 'id');
     }
 
     /**
@@ -71,7 +72,7 @@ class SnapshotManager
      * Revert model state from the snapshot.
      * 
      * @param  \MakiDizajnerica\Snapshoter\Contracts\Snapshotable $model
-     * @param  \MakiDizajnerica\Snapshoter\Models\Snapshot|int|string $snapshot
+     * @param  \MakiDizajnerica\Snapshoter\Models\Snapshot|string|int $snapshot
      * @return \MakiDizajnerica\Snapshoter\Contracts\Snapshotable
      * 
      * @todo Maybe define config property for deleting snapshots newer that current "$snapshot".

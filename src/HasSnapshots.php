@@ -76,7 +76,7 @@ trait HasSnapshots
     /**
      * Revert model's state to the snapshot.
      * 
-     * @param  \MakiDizajnerica\Snapshoter\Models\Snapshot|int|string $snapshot
+     * @param  \MakiDizajnerica\Snapshoter\Models\Snapshot|string|int $snapshot
      * @return \MakiDizajnerica\Snapshoter\Contracts\Snapshotable
      */
     public function revertToSnapshot($snapshot): Snapshotable
