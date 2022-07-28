@@ -51,6 +51,7 @@ trait HasSnapshots
 
     /**
      * Revert model's state to the previous snapshot.
+     * This method is just like "undo".
      * 
      * @param  int $step
      * @return \MakiDizajnerica\Snapshoter\Contracts\Snapshotable

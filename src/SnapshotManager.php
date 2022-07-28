@@ -67,7 +67,7 @@ class SnapshotManager
     }
 
     /**
-     * Revert model state from the snapshot.
+     * Revert model's state to the snapshot.
      * 
      * @param  \MakiDizajnerica\Snapshoter\Contracts\Snapshotable $model
      * @param  \MakiDizajnerica\Snapshoter\Models\Snapshot|string|int $snapshot

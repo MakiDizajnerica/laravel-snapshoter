@@ -61,6 +61,8 @@ use MakiDizajnerica\Snapshoter\Models\Snapshot;
 // Make snapshot for the model
 $project = Project::first();
 $project->makeSnapshot();
+// or
+snapshoter($project);
 
 // Revert model's state to previous snapshot
 $project->revertToPreviousSnapshot();
@@ -69,7 +71,7 @@ $project->revertToPreviousSnapshot();
 $project->revertToPreviousSnapshot(3);
 
 // You can also pass Snapshot instance
-$snapshot = Snapshot::first();
+$snapshot = $project->snapshots()->first();
 $project->revertToSnapshot($snapshot);
 ```
 
