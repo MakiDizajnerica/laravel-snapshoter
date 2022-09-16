@@ -14,6 +14,8 @@ class SnapshoterServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->mergeConfigFrom(__DIR__ . '/../config/snapshoter.php', 'snapshoter');
+
         $this->app->singleton('makidizajnerica-snapshoter', fn ($app) => $app->make(SnapshotManager::class));
     }
 
@@ -25,6 +27,8 @@ class SnapshoterServiceProvider extends ServiceProvider
     public function boot()
     {
         if ($this->app->runningInConsole()) {
+            $this->publishes([__DIR__ . '/../config/snapshoter.php' => config_path('snapshoter.php')], 'snapshoter-config');
+
             $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         }
     }

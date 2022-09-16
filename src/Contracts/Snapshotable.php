@@ -5,9 +5,9 @@ namespace MakiDizajnerica\Snapshoter\Contracts;
 interface Snapshotable
 {
     /**
-     * Get fields for the snapshot.
+     * Get attributes for the snapshot.
      *
      * @return array<string, mixed>
      */
-    public function snapshotFields(): array;
+    public function snapshotAttributes(): array;
 }

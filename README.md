@@ -14,6 +14,12 @@ After that be sure to run migrations to generate `snapshots` table:
 php artisan migrate
 ```
 
+Then publish config file `snapshoter.php` using:
+
+```bash
+php artisan vendor:publish --tag=snapshoter-config
+```
+
 ## Usage
 
 Your model needs to implement `MakiDizajnerica\Snapshoter\Contracts\Snapshotable` and also to use `MakiDizajnerica\Snapshoter\HasSnapshots` trait. Next define `snapshotFields` method that will return model attributes you want to save to the snapshots:
@@ -32,11 +38,11 @@ class Project extends Model implements SnapshotableContract
     use HasSnapshots;
 
     /**
-     * Get fields for the snapshot.
+     * Get attributes for the snapshot.
      *
      * @return array<string, mixed>
      */
-    public function snapshotFields(): array
+    public function snapshotAttributes(): array
     {
         return $this->only([
             'name',

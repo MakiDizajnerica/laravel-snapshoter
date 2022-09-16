@@ -18,7 +18,7 @@ class SnapshotManager
     public function makeSnapshot(Snapshotable $model): Snapshot
     {
         $state = Arr::map(
-            $model->snapshotFields(),
+            $model->snapshotAttributes(),
             fn ($value) => $value instanceof Collection
                 ? $value->modelKeys()
                 : $value
@@ -72,8 +72,6 @@ class SnapshotManager
      * @param  \MakiDizajnerica\Snapshoter\Contracts\Snapshotable $model
      * @param  \MakiDizajnerica\Snapshoter\Models\Snapshot|string|int $snapshot
      * @return \MakiDizajnerica\Snapshoter\Contracts\Snapshotable
-     * 
-     * @todo Maybe define config property for deleting snapshots newer that current "$snapshot".
      */
     public function revertToSnapshot(Snapshotable $model, $snapshot): Snapshotable
     {
@@ -83,11 +81,9 @@ class SnapshotManager
             return $model;
         }
 
-        // We are going to delete all snapshots that are newer that the current "$snapshot",
-        // because we don't want to run back and forth between all saved snapshots.
-        $model->snapshots()
-            ->where('id', '>', $snapshot->getKey())
-            ->delete();
+        if (config('snapshoter.delete_newer_snapshots_on_revert')) {
+            $model->snapshots()->where('id', '>', $snapshot->getKey())->delete();
+        }
 
         return $this->revert($model, $snapshot);
     }
