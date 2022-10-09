@@ -5,6 +5,7 @@ namespace MakiDizajnerica\Snapshoter;
 use Illuminate\Support\Arr;
 use Illuminate\Database\Eloquent\Collection;
 use MakiDizajnerica\Snapshoter\Models\Snapshot;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use MakiDizajnerica\Snapshoter\Contracts\Snapshotable;
 
 class SnapshotManager
@@ -59,8 +60,6 @@ class SnapshotManager
      */
     protected function retrieve(Snapshotable $model, $value, $field = 'id'): ?Snapshot
     {
-        // We are first going to check if model relation "snapshots" is loaded
-        // and we are going to take the snapshot from there. *optimisation*
         return $model->relationLoaded('snapshots')
             ? $model->snapshots->firstWhere($field, $value)
             : $model->snapshots()->firstWhere($field, $value);
@@ -98,6 +97,15 @@ class SnapshotManager
     protected function revert(Snapshotable $model, Snapshot $snapshot): Snapshotable
     {
         $state = $snapshot->state;
+
+        foreach ($state as $key => $value) {
+            if (method_exists($model, $key)
+                && is_a($model->{$key}(), Relation::class)) {
+                $relation = Arr::pull($state, $key);
+                // $model->{$relation}()->delete();
+                // $model->{$relation}()->attach($value);
+            }
+        }
 
         // Here we use "saveQuietly" because technically we are not updating the model,
         // we are just returning it to the previous state and we don't want any events to fire.
